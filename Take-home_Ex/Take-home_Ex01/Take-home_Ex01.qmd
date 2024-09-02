@@ -1,0 +1,12 @@
+---
+title: "Take-home_Ex01"
+author: "Yuheng Liang"
+format: html
+editor: visual
+date: "September 02, 2024"
+date-modified: "September 02,2024"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---
