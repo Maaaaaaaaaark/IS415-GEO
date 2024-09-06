@@ -88,6 +88,17 @@ filtered_acled_data <- acled_sf %>%
 ```{R}
 glimpse(filtered_acled_data)
 ```
+set new dataset by season
+```{R}
+seasonal_data <- filtered_acled_data %>%
+  group_by(quarter) %>%
+  group_split()
+
+q1_data <- seasonal_data[[1]]
+q2_data <- seasonal_data[[2]]
+q3_data <- seasonal_data[[3]]
+q4_data <- seasonal_data[[4]]
+```
 
 ### 3.2 Importing GIS Data
 
@@ -133,61 +144,201 @@ visualisation the boundary_transformed
 ggplot(boundary_transformed)+geom_sf()
 ```
 
+### 3.3 Geospatial Data wrangling
+#### 3.3.1 Converting sf data frames to sp’s Spatial* class
+```{R}
+q1 <- as_Spatial(q1_data)
+```
+display
+```{R}
+head(q1)
+```
+```{R}
+q2 <- as_Spatial(q2_data)
+q3 <- as_Spatial(q3_data)
+q4 <- as_Spatial(q4_data)
+```
+
+#### 3.3.2 Converting the Spatial* class into generic sp format
+
+```{R}
+q1_sp <- as(q1,"SpatialPoints")
+q2_sp <- as(q2,"SpatialPoints")
+q3_sp <- as(q3,"SpatialPoints")
+q4_sp <- as(q4,"SpatialPoints")
+```
+
+
+display shows below:
+```{R}
+q1_sp
+```
+
+#### 3.3.3 Converting the generic sp format into spatstat’s ppp format
+
+```{R}
+q1_ppp <- as.ppp(st_coordinates(q1_data), st_bbox(q1_data))
+q2_ppp <- as.ppp(st_coordinates(q2_data), st_bbox(q2_data))
+q3_ppp <- as.ppp(st_coordinates(q3_data), st_bbox(q3_data))
+q4_ppp <- as.ppp(st_coordinates(q4_data), st_bbox(q4_data))
+```
+
+#### 3.3.4 Handling duplicated point
+
+```{R}
+any(duplicated(q1_ppp))
+any(duplicated(q2_ppp))
+any(duplicated(q3_ppp))
+any(duplicated(q4_ppp))
+```
+jittering approach
+```{R}
+q1_ppp_jit <- rjitter(q1_ppp,retry=TRUE,nsim=1,drop=TRUE)
+q2_ppp_jit <- rjitter(q2_ppp,retry=TRUE,nsim=1,drop=TRUE)
+q3_ppp_jit <- rjitter(q3_ppp,retry=TRUE,nsim=1,drop=TRUE)
+q4_ppp_jit <- rjitter(q4_ppp,retry=TRUE,nsim=1,drop=TRUE)
+```
+
+check if any duplicayed points in this geospatial data.
+```{R}
+any(duplicated(q1_ppp_jit))
+any(duplicated(q2_ppp_jit))
+any(duplicated(q3_ppp_jit))
+any(duplicated(q4_ppp_jit))
+```
+
+#### 3.3.5 Creating owin object
+covert sgSpatialPolygon object into owin object of spatstat
+```{R}
+boundary_owin <- as.owin(boundary_transformed)
+```
+display
+```{R}
+plot(boundary_owin)
+```
+
+#### 3.3.6 combining point events object and owin object
+```{r}
+acledmy_ppp_q1 = q1_ppp[boundary_owin]
+acledmy_ppp_q2 = q2_ppp[boundary_owin]
+acledmy_ppp_q3 = q3_ppp[boundary_owin]
+acledmy_ppp_q4 = q4_ppp[boundary_owin]
+```
+
 ## 4.0 derive quarterly KDE layers
-
-data warning
-
-```{r}
-acled_sf <- st_as_sf(filtered_acled_data, coords = c("longitude", "latitude"), crs = 4326)
-```
-
+### 4.1 q1
 ```{R}
-head(acled_sf)
+acledmy_ppp_q1_bw <- density(acledmy_ppp_q1,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
 ```
-
-filt
-
+display
 ```{R}
-filter_by_quarter <- function(data, quarter) {
-  data %>% filter(quarter == quarter)
-}
+plot(acledmy_ppp_q1_bw)
 ```
 
-```{R}
-unique(filtered_acled_data$quarter)
-```
-
-```{R}
-# 按季度过滤数据的函数
-filter_by_quarter <- function(data, q) {
-  data %>% filter(quarter == q)
-}
-```
-
-```{r}
-for (q in 1:4) {
-  filtered_data <- filter_by_quarter(acled_sf, q)
-  print(paste("Quarter", q, ": Number of events:", nrow(filtered_data)))
-}
-```
 
 ```{R}
 install.packages("MASS")
 library(MASS)
-for (q in 1:4) {
-  filtered_data <- filter_by_quarter(acled_sf, q)
-  print(paste("Quarter", q, ": Number of events:", nrow(filtered_data)))
+for (q in 1) {
   
   # 提取坐标点
-  coordinates <- st_coordinates(filtered_data)
+  coordinates <- st_coordinates(q1_data)
   lon <- coordinates[, 1]  # 经度
   lat <- coordinates[, 2]  # 纬度
   
   # 生成 KDE
-  kde <- kde2d(lon, lat, n = 100)
+  ppp_data <- ppp(lon, lat, window = boundary_owin)
+  
+  kde <- density(ppp_data)
   
   # 转换为 raster 并可视化
   kde_raster <- raster(kde)
-  plot(kde_raster, main = paste("KDE for Quarter", q))
+  plot(kde_raster, main = paste("q1_data", q))
+}
+```
+### 4.2 q2
+```{R}
+acledmy_ppp_q2_bw <- density(acledmy_ppp_q2,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
+```
+display
+```{R}
+plot(acledmy_ppp_q2_bw)
+```
+
+```{R}
+library(MASS)
+for (q in 1) {
+  
+  # 提取坐标点
+  coordinates <- st_coordinates(q2_data)
+  lon <- coordinates[, 1]  # 经度
+  lat <- coordinates[, 2]  # 纬度
+  
+  # 生成 KDE
+  ppp_data <- ppp(lon, lat, window = boundary_owin)
+  
+  kde <- density(ppp_data)
+  
+  # 转换为 raster 并可视化
+  kde_raster <- raster(kde)
+  plot(kde_raster, main = paste("q2_data", q))
+}
+```
+
+### 4.3 q3
+```{R}
+acledmy_ppp_q3_bw <- density(acledmy_ppp_q3,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
+```
+display
+```{R}
+plot(acledmy_ppp_q3_bw)
+```
+
+```{r}
+library(MASS)
+for (q in 1) {
+  
+  # 提取坐标点
+  coordinates <- st_coordinates(q3_data)
+  lon <- coordinates[, 1]  # 经度
+  lat <- coordinates[, 2]  # 纬度
+  
+  # 生成 KDE
+  ppp_data <- ppp(lon, lat, window = boundary_owin)
+  
+  kde <- density(ppp_data)
+  
+  # 转换为 raster 并可视化
+  kde_raster <- raster(kde)
+  plot(kde_raster, main = paste("q3_data", q))
+}
+```
+
+### 4.4 q4
+```{R}
+acledmy_ppp_q4_bw <- density(acledmy_ppp_q4,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
+```
+display
+```{R}
+plot(acledmy_ppp_q4_bw)
+```
+
+```{R}
+library(MASS)
+for (q in 1) {
+  
+  # 提取坐标点
+  coordinates <- st_coordinates(q4_data)
+  lon <- coordinates[, 1]  # 经度
+  lat <- coordinates[, 2]  # 纬度
+  
+  # 生成 KDE
+  ppp_data <- ppp(lon, lat, window = boundary_owin)
+  
+  kde <- density(ppp_data)
+  
+  # 转换为 raster 并可视化
+  kde_raster <- raster(kde)
+  plot(kde_raster, main = paste("q4_data", q))
 }
 ```
