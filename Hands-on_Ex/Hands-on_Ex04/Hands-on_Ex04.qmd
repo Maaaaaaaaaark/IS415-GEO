@@ -1,0 +1,12 @@
+---
+title: "Hands-on exercise04"
+author: "Yuheng Liang"
+format: html
+editor: visual
+date: "September 4, 2024"
+date-modified: "September 4,2024"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+---

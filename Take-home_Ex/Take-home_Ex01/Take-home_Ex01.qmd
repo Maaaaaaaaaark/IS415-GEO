@@ -10,3 +10,184 @@ execute:
   echo: true
   freeze: true
 ---
+
+# Take home ex01:**Geospatial Analytics for Social Good: Application of Spatial and Spatio-temporal Point Patterns Analysis to discover the geographical distribution of Armed Conflict in Myanmar**
+
+## 1.0 Overview
+
+### 1.1 Objectives
+
+Exercise Requirements:
+
+-   Using appropriate function of **sf** and **tidyverse** packages, import and transform the downloaded armed conflict data and administrative boundary data into sf tibble data.frames.
+-   Using the geospatial data sets prepared, derive quarterly KDE layers.
+-   Using the geospatial data sets prepared, perform 2nd-Order Spatial Point Patterns Analysis.
+-   Using the geospatial data sets prepared, derive quarterly spatio-temporal KDE layers.
+-   Using the geospatial data sets prepared, perform 2nd-Order Spatio-temporal Point Patterns Analysis.
+-   Using appropriate tmap functions, display the KDE and Spatio-temporal KDE layers on openstreetmap of Myanmar.
+-   Describe the spatial patterns revealed by the KDE and Spatio-temporal KDE maps.
+
+## 2.0 Setup
+
+### 2.1 Dependencies
+
+I will use these tools in this time Take home ex01
+
+### Core Packages:
+
+-   SF: This package provides functions for reading, manipulating, and visualizing simple features geometries. It's essential for working with spatial data in R.
+-   tidyverse: A collection of packages including dplyr, ggplot2, and readr, provides a grammar of data manipulation. It's useful for data cleaning and transformation.
+-   dplyr:
+-   lubridate:
+-   spatstat:
+
+**Visualization Package:**
+
+-   tmap: Create thematic maps quickly and easily. It's ideal for visualizing spatial data.
+
+```{R}
+pacman::p_load(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,spatstat,raster,Mass)
+```
+
+### 2.2 Datasets
+
+-   **Armed conflict data**
+
+-   **GIS Data**
+
+## 3.0 Data warning
+
+### 3.1 Importing Armed conflict data
+
+-   Reads a CSV file named "ACLED_Myanmar.csv" and stores the data in a variable called acled_sf.
+-   Converts to spatial object
+-   Projects to a different coordinate system
+-   Converts date format
+
+```{R}
+acled_sf <- read_csv("data/ACLED_Myanmar.csv")%>%
+  st_as_sf(coords =c("longitude", "latitude"),crs=4326)%>%
+  st_transform(crs=32647)%>%
+  mutate(event_date =dmy(event_date))
+```
+
+check data
+
+```{R}
+head(acled_sf)
+```
+
+filtered data
+
+```{R}
+filtered_acled_data <- acled_sf %>%
+  filter(event_date >= "2021-01-01" & event_date <= "2024-06-30")%>%
+  mutate(quarter = quarter(event_date))
+```
+
+```{R}
+glimpse(filtered_acled_data)
+```
+
+### 3.2 Importing GIS Data
+
+Importing polygon feature data in shapefile format
+
+```{R}
+boundry <- st_read(dsn = "data/mmr_polbnda_adm1_250k_mimu_1", layer = "mmr_polbnda_adm1_250k_mimu_1")
+```
+
+Data inspection and visualisation
+
+View Data Structures
+
+```{R}
+glimpse(boundary)
+```
+
+Vies crs
+
+```{R}
+st_crs(boundary)
+```
+
+transform data
+
+```{R}
+boundary_transformed <- st_transform(boundry,crs = 32647)
+```
+
+check the data after transform
+
+```{R}
+st_crs(boundary_transformed)
+```
+
+```{r}
+glimpse(boundary_transformed)
+```
+
+visualisation the boundary_transformed
+
+```{R}
+ggplot(boundary_transformed)+geom_sf()
+```
+
+## 4.0 derive quarterly KDE layers
+
+data warning
+
+```{r}
+acled_sf <- st_as_sf(filtered_acled_data, coords = c("longitude", "latitude"), crs = 4326)
+```
+
+```{R}
+head(acled_sf)
+```
+
+filt
+
+```{R}
+filter_by_quarter <- function(data, quarter) {
+  data %>% filter(quarter == quarter)
+}
+```
+
+```{R}
+unique(filtered_acled_data$quarter)
+```
+
+```{R}
+# 按季度过滤数据的函数
+filter_by_quarter <- function(data, q) {
+  data %>% filter(quarter == q)
+}
+```
+
+```{r}
+for (q in 1:4) {
+  filtered_data <- filter_by_quarter(acled_sf, q)
+  print(paste("Quarter", q, ": Number of events:", nrow(filtered_data)))
+}
+```
+
+```{R}
+install.packages("MASS")
+library(MASS)
+for (q in 1:4) {
+  filtered_data <- filter_by_quarter(acled_sf, q)
+  print(paste("Quarter", q, ": Number of events:", nrow(filtered_data)))
+  
+  # 提取坐标点
+  coordinates <- st_coordinates(filtered_data)
+  lon <- coordinates[, 1]  # 经度
+  lat <- coordinates[, 2]  # 纬度
+  
+  # 生成 KDE
+  kde <- kde2d(lon, lat, n = 100)
+  
+  # 转换为 raster 并可视化
+  kde_raster <- raster(kde)
+  plot(kde_raster, main = paste("KDE for Quarter", q))
+}
+```
