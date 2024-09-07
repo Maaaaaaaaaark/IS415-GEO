@@ -4,7 +4,7 @@ author: "Yuheng Liang"
 format: html
 editor: visual
 date: "September 02, 2024"
-date-modified: "September 02,2024"
+date-modified: "September 08,2024"
 execute: 
   eval: true
   echo: true
@@ -31,9 +31,7 @@ Exercise Requirements:
 
 ### 2.1 Dependencies
 
-I will use these tools in this time Take home ex01
-
-### Core Packages:
+#### 2.1.1 Core Packages:
 
 -   SF: This package provides functions for reading, manipulating, and visualizing simple features geometries. It's essential for working with spatial data in R.
 -   tidyverse: A collection of packages including dplyr, ggplot2, and readr, provides a grammar of data manipulation. It's useful for data cleaning and transformation.
@@ -228,15 +226,6 @@ acledmy_ppp_q4 = q4_ppp[boundary_owin]
 ## 4.0 derive quarterly KDE layers
 ### 4.1 q1
 ```{R}
-acledmy_ppp_q1_bw <- density(acledmy_ppp_q1,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
-```
-display
-```{R}
-plot(acledmy_ppp_q1_bw)
-```
-
-
-```{R}
 install.packages("MASS")
 library(MASS)
 for (q in 1) {
@@ -247,26 +236,16 @@ for (q in 1) {
   lat <- coordinates[, 2]  # 纬度
   
   # 生成 KDE
-  ppp_data <- ppp(lon, lat, window = boundary_owin)
-  
-  kde <- density(ppp_data)
+  kde <- kde2d(lon, lat, n = 200)
   
   # 转换为 raster 并可视化
   kde_raster <- raster(kde)
-  plot(kde_raster, main = paste("q1_data", q))
+  plot(kde_raster, main = paste("KDE for Quarter 1"))
 }
 ```
 ### 4.2 q2
-```{R}
-acledmy_ppp_q2_bw <- density(acledmy_ppp_q2,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
-```
-display
-```{R}
-plot(acledmy_ppp_q2_bw)
-```
 
 ```{R}
-library(MASS)
 for (q in 1) {
   
   # 提取坐标点
@@ -275,27 +254,17 @@ for (q in 1) {
   lat <- coordinates[, 2]  # 纬度
   
   # 生成 KDE
-  ppp_data <- ppp(lon, lat, window = boundary_owin)
-  
-  kde <- density(ppp_data)
+  kde <- kde2d(lon, lat, n = 200)
   
   # 转换为 raster 并可视化
   kde_raster <- raster(kde)
-  plot(kde_raster, main = paste("q2_data", q))
+  plot(kde_raster, main = paste("KDE for Quarter 2"))
 }
 ```
 
 ### 4.3 q3
-```{R}
-acledmy_ppp_q3_bw <- density(acledmy_ppp_q3,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
-```
-display
-```{R}
-plot(acledmy_ppp_q3_bw)
-```
 
 ```{r}
-library(MASS)
 for (q in 1) {
   
   # 提取坐标点
@@ -304,27 +273,16 @@ for (q in 1) {
   lat <- coordinates[, 2]  # 纬度
   
   # 生成 KDE
-  ppp_data <- ppp(lon, lat, window = boundary_owin)
-  
-  kde <- density(ppp_data)
+  kde <- kde2d(lon, lat, n = 500)
   
   # 转换为 raster 并可视化
   kde_raster <- raster(kde)
-  plot(kde_raster, main = paste("q3_data", q))
+  plot(kde_raster, main = paste("KDE for Quarter 3"))
 }
 ```
 
 ### 4.4 q4
 ```{R}
-acledmy_ppp_q4_bw <- density(acledmy_ppp_q4,sigma=bw.diggle,edge=TRUE,kernel="gaussian")
-```
-display
-```{R}
-plot(acledmy_ppp_q4_bw)
-```
-
-```{R}
-library(MASS)
 for (q in 1) {
   
   # 提取坐标点
@@ -333,12 +291,77 @@ for (q in 1) {
   lat <- coordinates[, 2]  # 纬度
   
   # 生成 KDE
-  ppp_data <- ppp(lon, lat, window = boundary_owin)
-  
-  kde <- density(ppp_data)
+  kde <- kde2d(lon, lat, n = 1000)
   
   # 转换为 raster 并可视化
   kde_raster <- raster(kde)
-  plot(kde_raster, main = paste("q4_data", q))
+  plot(kde_raster, main = paste("KDE for Quarter 4"))
 }
 ```
+## 5.0 perform 2nd-Order Spatial Point Patterns Analysis
+For a comprehensive analysis of the clustering or dispersion of armed conflict events in Myanmar on a region-wide scale for the period 2021-2024, I recommend the use of K-functions or L-functions. They provide information on clustering or dispersion at different distance scales on a global scale.
+
+### 5.1 data examination
+Checking whether a point pattern data is valid
+```{R}
+summary(q1_ppp)
+```
+### 5.2  Computing K-fucntion estimate
+```{R}
+K_q1 <- Kest(q1_ppp,correction = "Ripley")
+K_q2 <- Kest(q2_ppp,correction = "Ripley")
+K_q3 <- Kest(q3_ppp,correction = "Ripley")
+K_q4 <- Kest(q4_ppp,correction = "Ripley")
+
+```
+display
+```{R}
+plot(K_q1, . -r ~ r, ylab= "K(d)-r")
+plot(K_q2, . -r ~ r, ylab= "K(d)-r")
+plot(K_q3, . -r ~ r, ylab= "K(d)-r")
+plot(K_q4, . -r ~ r, ylab= "K(d)-r")
+
+```
+### 5.3 Computing L-fucntion estimate
+```{R}
+L1_ck <- Lest(q1_ppp, correction = "Ripley")
+L2_ck <- Lest(q2_ppp, correction = "Ripley")
+L3_ck <- Lest(q3_ppp, correction = "Ripley")
+L4_ck <- Lest(q4_ppp, correction = "Ripley")
+```
+display
+```{R}
+plot(L1_ck, . -r ~ r)
+plot(L2_ck, . -r ~ r)
+plot(L3_ck, . -r ~ r)
+plot(L4_ck, . -r ~ r)
+```
+### 5.4  Computing F-fucntion estimate
+```{R}
+F1_ck = Fest(q1_ppp)
+F2_ck = Fest(q2_ppp)
+F3_ck = Fest(q3_ppp)
+F4_ck = Fest(q4_ppp)
+```
+diasplay
+```{R}
+plot(F1_ck)
+plot(F2_ck)
+plot(F3_ck)
+plot(F4_ck)
+```
+### 5.5 Computing G-fucntion estimate
+```{R}
+G1_ck = Gest(q1_ppp, correction = "border")
+G2_ck = Gest(q2_ppp, correction = "border")
+G3_ck = Gest(q3_ppp, correction = "border")
+G4_ck = Gest(q4_ppp, correction = "border")
+```
+display
+```{R}
+plot(G1_ck)
+plot(G2_ck)
+plot(G3_ck)
+plot(G4_ck)
+```
+
