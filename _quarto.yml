@@ -38,7 +38,7 @@ website:
 format:
   html:
     theme: Material design
-    css: styles.css
+    css: bootstrap
     toc: true
 
 editor: visual
