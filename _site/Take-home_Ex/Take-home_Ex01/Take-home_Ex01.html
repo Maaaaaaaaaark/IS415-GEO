@@ -239,6 +239,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#computing-kernel-density-estimation-using-automatic-bandwidth-selection-method" id="toc-computing-kernel-density-estimation-using-automatic-bandwidth-selection-method" class="nav-link" data-scroll-target="#computing-kernel-density-estimation-using-automatic-bandwidth-selection-method">6.1 Computing kernel density estimation using automatic bandwidth selection method</a></li>
   </ul></li>
+  <li><a href="#second-order-spatial-point-patterns-analysis" id="toc-second-order-spatial-point-patterns-analysis" class="nav-link" data-scroll-target="#second-order-spatial-point-patterns-analysis">7.0 Second-order Spatial Point Patterns Analysis</a>
+  <ul class="collapse">
+  <li><a href="#analysing-spatial-point-process-using-g-function" id="toc-analysing-spatial-point-process-using-g-function" class="nav-link" data-scroll-target="#analysing-spatial-point-process-using-g-function">7.1 Analysing Spatial Point Process Using G-Function</a></li>
+  <li><a href="#computing-f-function-estimation" id="toc-computing-f-function-estimation" class="nav-link" data-scroll-target="#computing-f-function-estimation">7.2 Computing F-function estimation</a></li>
+  <li><a href="#computing-k-function-estimation" id="toc-computing-k-function-estimation" class="nav-link" data-scroll-target="#computing-k-function-estimation">7.3 Computing K-function estimation</a></li>
+  <li><a href="#computing-l-function-estimation" id="toc-computing-l-function-estimation" class="nav-link" data-scroll-target="#computing-l-function-estimation">7.4 Computing L-function estimation</a></li>
+  </ul></li>
+  <li><a href="#derive-quarterly-spatio-temporal-kde-layers." id="toc-derive-quarterly-spatio-temporal-kde-layers." class="nav-link" data-scroll-target="#derive-quarterly-spatio-temporal-kde-layers.">8.0 derive quarterly spatio-temporal KDE layers.</a>
+  <ul class="collapse">
+  <li><a href="#computing-spatio-temporal-kde" id="toc-computing-spatio-temporal-kde" class="nav-link" data-scroll-target="#computing-spatio-temporal-kde">8.1 Computing spatio-temporal KDE</a></li>
+  <li><a href="#ploting-the-spatio-temporal-kde-object" id="toc-ploting-the-spatio-temporal-kde-object" class="nav-link" data-scroll-target="#ploting-the-spatio-temporal-kde-object">8.2 Ploting the Spatio-temporal KDE object</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -319,7 +331,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>tmap: Create thematic maps quickly and easily. It’s ideal for visualizing spatial data.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,spatstat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -493,7 +505,7 @@ PROJCRS["WGS 84 / UTM zone 47N",
 <h3 class="anchored" data-anchor-id="extracting-acled-by-quarter">5.1 Extracting Acled by quarter</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>acled_quarter <span class="ot">&lt;-</span> acled_sf<span class="sc">%&gt;%</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(quarter)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="creating-ppp" class="level3">
@@ -561,8 +573,8 @@ Window area = 1.64803e+12 square units</code></pre>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>acledMy_ppp <span class="ot">=</span> acled_quarter_ppp_jit[boundry_owin]</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(acledMy_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  51459 points
-Average intensity 7.683733e-08 points per square unit
+<pre><code>Marked planar point pattern:  51466 points
+Average intensity 7.684779e-08 points per square unit
 
 Coordinates are given to 16 decimal places
 
@@ -4175,6 +4187,122 @@ Fraction of frame area: 0.343</code></pre>
 <div>
 <figure class="figure">
 <p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-18-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="second-order-spatial-point-patterns-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="second-order-spatial-point-patterns-analysis">7.0 Second-order Spatial Point Patterns Analysis</h2>
+<section id="analysing-spatial-point-process-using-g-function" class="level3">
+<h3 class="anchored" data-anchor-id="analysing-spatial-point-process-using-g-function">7.1 Analysing Spatial Point Process Using G-Function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>G_1 <span class="ot">&lt;-</span> <span class="fu">Gest</span>(acled_quarter_ppp_jit,<span class="at">correction =</span> <span class="st">"border"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(G_1,<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">500</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="computing-f-function-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="computing-f-function-estimation">7.2 Computing F-function estimation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>f_1 <span class="ot">&lt;-</span> <span class="fu">Fest</span>(acled_quarter_ppp_jit)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(f_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="computing-k-function-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="computing-k-function-estimation">7.3 Computing K-function estimation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>K_1 <span class="ot">=</span> <span class="fu">Kest</span>(acled_quarter_ppp_jit, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(K_1, . <span class="sc">-</span>r <span class="sc">~</span> r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="computing-l-function-estimation" class="level3">
+<h3 class="anchored" data-anchor-id="computing-l-function-estimation">7.4 Computing L-function estimation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>L_1 <span class="ot">=</span> <span class="fu">Lest</span>(acled_quarter_ppp_jit, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(L_1, . <span class="sc">-</span>r <span class="sc">~</span> r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="derive-quarterly-spatio-temporal-kde-layers." class="level2">
+<h2 class="anchored" data-anchor-id="derive-quarterly-spatio-temporal-kde-layers.">8.0 derive quarterly spatio-temporal KDE layers.</h2>
+<section id="computing-spatio-temporal-kde" class="level3">
+<h3 class="anchored" data-anchor-id="computing-spatio-temporal-kde">8.1 Computing spatio-temporal KDE</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>st_kde <span class="ot">&lt;-</span> <span class="fu">spattemp.density</span>(acledMy_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Calculating trivariate smooth...Done.
+Edge-correcting...Done.
+Conditioning on time...Done.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(st_kde)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Spatiotemporal Kernel Density Estimate
+
+Bandwidths
+  h = 43041.39 (spatial)
+  lambda = 6e-04 (temporal)
+
+No. of observations
+  51466 
+
+Spatial bound
+  Type: polygonal
+  2D enclosure: [-210008.6, 724647.6] x [1072026, 3158467]
+
+Temporal bound
+  [1, 4]
+
+Evaluation
+  128 x 128 x 4 trivariate lattice
+  Density range: [1.589255e-14, 4.251741e-09]</code></pre>
+</div>
+</div>
+</section>
+<section id="ploting-the-spatio-temporal-kde-object" class="level3">
+<h3 class="anchored" data-anchor-id="ploting-the-spatio-temporal-kde-object">8.2 Ploting the Spatio-temporal KDE object</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tims <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfcol=</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> tims){</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(st_kde,i,  </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">override.par=</span> <span class="cn">FALSE</span>,</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix.range =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main=</span><span class="fu">paste</span>(<span class="st">"KDE AT MONTH"</span>, i))</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

@@ -44,7 +44,7 @@ Exercise Requirements:
 -   tmap: Create thematic maps quickly and easily. It's ideal for visualizing spatial data.
 
 ```{R}
-pacman::p_load(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,spatstat)
+pacman::p_load(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster)
 ```
 
 ### 2.2 Datasets
@@ -121,7 +121,7 @@ tm_shape(boundry)+tm_polygons()+tm_shape(acled_sf)+tm_dots(size =0.1)+ tm_facets
 ### 5.1 Extracting Acled by quarter
 ```{R}
 acled_quarter <- acled_sf%>%
-  select(quarter)
+  dplyr::select(quarter)
 ```
 
 ### 5.2 Creating PPP
@@ -166,6 +166,47 @@ for (i in 1:4) {
 }
 for (i in 1:4) {
   plot(kde_acledMy_ppp_list[[i]], main=paste("KDE AT QUARTER", i))
+}
+```
+
+## 7.0 Second-order Spatial Point Patterns Analysis
+### 7.1 Analysing Spatial Point Process Using G-Function
+```{R}
+G_1 <- Gest(acled_quarter_ppp_jit,correction = "border")
+plot(G_1,xlim=c(0,500))
+```
+### 7.2 Computing F-function estimation
+```{R}
+f_1 <- Fest(acled_quarter_ppp_jit)
+plot(f_1)
+```
+
+### 7.3 Computing K-function estimation
+```{R}
+K_1 = Kest(acled_quarter_ppp_jit, correction = "Ripley")
+plot(K_1, . -r ~ r)
+```
+### 7.4 Computing L-function estimation
+```{R}
+L_1 = Lest(acled_quarter_ppp_jit, correction = "Ripley")
+plot(L_1, . -r ~ r)
+```
+## 8.0 derive quarterly spatio-temporal KDE layers.
+### 8.1 Computing spatio-temporal KDE
+```{R}
+st_kde <- spattemp.density(acledMy_ppp)
+summary(st_kde)
+```
+### 8.2 Ploting the Spatio-temporal KDE object
+```{R}
+tims <- c(1,2,3,4)
+par(mfcol= c(2,2))
+par(mar = c(2, 2, 2, 2))
+for(i in tims){
+  plot(st_kde,i,  
+  override.par= FALSE,
+  fix.range = TRUE,
+  main=paste("KDE AT MONTH", i))
 }
 ```
 
