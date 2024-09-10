@@ -206,7 +206,7 @@ for(i in tims){
   plot(st_kde,i,  
   override.par= FALSE,
   fix.range = TRUE,
-  main=paste("KDE AT MONTH", i))
+  main=paste("KDE AT Quarter", i))
 }
 ```
 

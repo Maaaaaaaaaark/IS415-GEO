@@ -573,8 +573,8 @@ Window area = 1.64803e+12 square units</code></pre>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>acledMy_ppp <span class="ot">=</span> acled_quarter_ppp_jit[boundry_owin]</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(acledMy_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  51466 points
-Average intensity 7.684779e-08 points per square unit
+<pre><code>Marked planar point pattern:  51454 points
+Average intensity 7.682987e-08 points per square unit
 
 Coordinates are given to 16 decimal places
 
@@ -4268,11 +4268,11 @@ Conditioning on time...Done.</code></pre>
 <pre><code>Spatiotemporal Kernel Density Estimate
 
 Bandwidths
-  h = 43041.39 (spatial)
+  h = 43035.35 (spatial)
   lambda = 6e-04 (temporal)
 
 No. of observations
-  51466 
+  51454 
 
 Spatial bound
   Type: polygonal
@@ -4283,7 +4283,7 @@ Temporal bound
 
 Evaluation
   128 x 128 x 4 trivariate lattice
-  Density range: [1.589255e-14, 4.251741e-09]</code></pre>
+  Density range: [1.456464e-14, 4.252875e-09]</code></pre>
 </div>
 </div>
 </section>
@@ -4297,7 +4297,7 @@ Evaluation
 <span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(st_kde,i,  </span>
 <span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">override.par=</span> <span class="cn">FALSE</span>,</span>
 <span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fix.range =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main=</span><span class="fu">paste</span>(<span class="st">"KDE AT MONTH"</span>, i))</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main=</span><span class="fu">paste</span>(<span class="st">"KDE AT Quarter"</span>, i))</span>
 <span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
