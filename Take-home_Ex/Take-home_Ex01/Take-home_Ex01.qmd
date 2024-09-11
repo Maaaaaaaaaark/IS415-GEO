@@ -44,7 +44,7 @@ Exercise Requirements:
 -   tmap: Create thematic maps quickly and easily. It's ideal for visualizing spatial data.
 
 ```{R}
-pacman::p_load(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster)
+pacman::p_load(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster,stpp)
 ```
 
 ### 2.2 Datasets
@@ -70,16 +70,17 @@ acled_sf <- read_csv("data/Myanmar.csv")%>%
 ```
 
 check data
+
 ```{R}
 class(acled_sf)
 ```
 
 filtered data
+
 ```{R}
 acled_sf <- acled_sf %>%
   mutate(quarter = quarter(event_date))
 ```
-
 
 ### 3.2 Importing GIS Data
 
@@ -97,21 +98,29 @@ Vies crs
 ```{R}
 st_crs(boundry)
 ```
+
 ### 3.3 Coverting OWIN
+
 ```{r}
 boundry_owin <- as.owin(boundry)
 ```
 
 check data
+
 ```{R}
 class(boundry_owin)
 ```
+
 ## 4.0 Visualising the point
+
 ### 4.1Overall Pollot
+
 ```{R}
 tm_shape(boundry)+tm_polygons()+tm_shape(acled_sf)+tm_dots()
 ```
+
 ### 4.2visualsing geographiv distribution by quarter
+
 ```{R}
 tm_shape(boundry)+tm_polygons()+tm_shape(acled_sf)+tm_dots(size =0.1)+ tm_facets(by ="quarter", free.coords = FALSE, drop.units = TRUE )
 ```
@@ -119,25 +128,33 @@ tm_shape(boundry)+tm_polygons()+tm_shape(acled_sf)+tm_dots(size =0.1)+ tm_facets
 ## 5.0 Computer Acled by quarter
 
 ### 5.1 Extracting Acled by quarter
+
 ```{R}
 acled_quarter <- acled_sf%>%
   dplyr::select(quarter)
 ```
 
 ### 5.2 Creating PPP
+
 ```{R}
 acled_quarter_qqq <- as.ppp(acled_quarter)
 acled_quarter_qqq
 ```
+
 #### 5.2.1check the output is in the correct object class
+
 ```{R}
 summary(acled_quarter_qqq)
 ```
+
 #### 5.2.2 check the duplication in a ppp obkect and deal with it
+
 ```{R}
 any(duplicated(acled_quarter_qqq))
 ```
+
 #### 5.2.3 deal with the duplicated points
+
 ```{R}
 acled_quarter_ppp_jit <- rjitter(acled_quarter_qqq, 
                              retry=TRUE, 
@@ -145,18 +162,21 @@ acled_quarter_ppp_jit <- rjitter(acled_quarter_qqq,
                              drop=TRUE)
 ```
 
-
 ```{R}
 any(duplicated(acled_quarter_ppp_jit))
 ```
+
 ### 5.3 Combining point events object and owin object
+
 ```{R}
 acledMy_ppp = acled_quarter_ppp_jit[boundry_owin]
 summary(acledMy_ppp)
 ```
 
 ## 6.0 Ploting the KDE object
+
 ### 6.1 Computing kernel density estimation using automatic bandwidth selection method
+
 ```{R}
 kde_acledMy_ppp_list <- list()
 
@@ -170,34 +190,46 @@ for (i in 1:4) {
 ```
 
 ## 7.0 Second-order Spatial Point Patterns Analysis
-### 7.1 Analysing Spatial Point Process Using G-Function
+
+### 7.1 Computing G-Function
+
 ```{R}
-G_1 <- Gest(acled_quarter_ppp_jit,correction = "border")
+G_1 <- Gest(acled_quarter_qqq,correction = "border")
 plot(G_1,xlim=c(0,500))
 ```
+
 ### 7.2 Computing F-function estimation
+
 ```{R}
-f_1 <- Fest(acled_quarter_ppp_jit)
+f_1 <- Fest(acled_quarter_qqq)
 plot(f_1)
 ```
 
 ### 7.3 Computing K-function estimation
+
 ```{R}
 K_1 = Kest(acled_quarter_ppp_jit, correction = "Ripley")
 plot(K_1, . -r ~ r)
 ```
+
 ### 7.4 Computing L-function estimation
+
 ```{R}
 L_1 = Lest(acled_quarter_ppp_jit, correction = "Ripley")
 plot(L_1, . -r ~ r)
 ```
+
 ## 8.0 derive quarterly spatio-temporal KDE layers.
+
 ### 8.1 Computing spatio-temporal KDE
+
 ```{R}
 st_kde <- spattemp.density(acledMy_ppp)
 summary(st_kde)
 ```
+
 ### 8.2 Ploting the Spatio-temporal KDE object
+
 ```{R}
 tims <- c(1,2,3,4)
 par(mfcol= c(2,2))
@@ -210,3 +242,54 @@ for(i in tims){
 }
 ```
 
+## 9.0 perform 2nd-Order Spatio-temporal Point Patterns Analysis
+
+### 9.1 Using G-Function
+
+```{R}
+G_function_results <- list()
+for (i in unique(acled_sf$quarter)) {
+  acled_quarter <- subset(acled_sf, quarter == i)
+  acled_ppp <- as.ppp(acled_quarter)
+  G_function_results[[i]] <- Gest(acled_ppp, correction = "border")
+  plot(G_function_results[[i]], main = paste("G-function for Quarter", i))
+}
+```
+
+### 9.2 Using K-function
+
+```{R}
+K_function_results <- list()
+for (i in unique(acled_sf$quarter)) {
+  acled_quarter <- subset(acled_sf, quarter == i)
+  acled_ppp <- as.ppp(acled_quarter)
+  K_function_results[[i]] <- Kest(acled_ppp, correction = "Ripley")
+  plot(K_function_results[[i]], main = paste("K-function for Quarter", i))
+}
+```
+
+### 9.3 Using L-function
+
+```{R}
+L_function_results <- list()
+for (i in unique(acled_sf$quarter)) {
+  acled_quarter <- subset(acled_sf, quarter == i)
+  acled_ppp <- as.ppp(acled_quarter)
+  L_function_results[[i]] <- Lest(acled_ppp, correction = "Ripley")
+  plot(L_function_results[[i]], main = paste("L-function for Quarter", i))
+}
+
+```
+
+### 9.4 Using F-function
+
+```{R}
+F_function_results <- list()
+for (i in unique(acled_sf$quarter)) {
+  acled_quarter <- subset(acled_sf, quarter == i)
+  acled_ppp <- as.ppp(acled_quarter)
+  F_function_results[[i]] <- Fest(acled_ppp, correction = "border")
+  plot(F_function_results[[i]], main = paste("F-function for Quarter", i))
+}
+
+```

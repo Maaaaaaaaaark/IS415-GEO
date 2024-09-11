@@ -241,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#second-order-spatial-point-patterns-analysis" id="toc-second-order-spatial-point-patterns-analysis" class="nav-link" data-scroll-target="#second-order-spatial-point-patterns-analysis">7.0 Second-order Spatial Point Patterns Analysis</a>
   <ul class="collapse">
-  <li><a href="#analysing-spatial-point-process-using-g-function" id="toc-analysing-spatial-point-process-using-g-function" class="nav-link" data-scroll-target="#analysing-spatial-point-process-using-g-function">7.1 Analysing Spatial Point Process Using G-Function</a></li>
+  <li><a href="#computing-g-function" id="toc-computing-g-function" class="nav-link" data-scroll-target="#computing-g-function">7.1 Computing G-Function</a></li>
   <li><a href="#computing-f-function-estimation" id="toc-computing-f-function-estimation" class="nav-link" data-scroll-target="#computing-f-function-estimation">7.2 Computing F-function estimation</a></li>
   <li><a href="#computing-k-function-estimation" id="toc-computing-k-function-estimation" class="nav-link" data-scroll-target="#computing-k-function-estimation">7.3 Computing K-function estimation</a></li>
   <li><a href="#computing-l-function-estimation" id="toc-computing-l-function-estimation" class="nav-link" data-scroll-target="#computing-l-function-estimation">7.4 Computing L-function estimation</a></li>
@@ -250,6 +250,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#computing-spatio-temporal-kde" id="toc-computing-spatio-temporal-kde" class="nav-link" data-scroll-target="#computing-spatio-temporal-kde">8.1 Computing spatio-temporal KDE</a></li>
   <li><a href="#ploting-the-spatio-temporal-kde-object" id="toc-ploting-the-spatio-temporal-kde-object" class="nav-link" data-scroll-target="#ploting-the-spatio-temporal-kde-object">8.2 Ploting the Spatio-temporal KDE object</a></li>
+  </ul></li>
+  <li><a href="#perform-2nd-order-spatio-temporal-point-patterns-analysis" id="toc-perform-2nd-order-spatio-temporal-point-patterns-analysis" class="nav-link" data-scroll-target="#perform-2nd-order-spatio-temporal-point-patterns-analysis">9.0 perform 2nd-Order Spatio-temporal Point Patterns Analysis</a>
+  <ul class="collapse">
+  <li><a href="#using-g-function" id="toc-using-g-function" class="nav-link" data-scroll-target="#using-g-function">9.1 Using G-Function</a></li>
+  <li><a href="#using-k-function" id="toc-using-k-function" class="nav-link" data-scroll-target="#using-k-function">9.2 Using K-function</a></li>
+  <li><a href="#using-l-function" id="toc-using-l-function" class="nav-link" data-scroll-target="#using-l-function">9.3 Using L-function</a></li>
+  <li><a href="#using-f-function" id="toc-using-f-function" class="nav-link" data-scroll-target="#using-f-function">9.4 Using F-function</a></li>
   </ul></li>
   </ul></li>
   </ul>
@@ -331,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>tmap: Create thematic maps quickly and easily. It’s ideal for visualizing spatial data.</li>
 </ul>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf, tmap, maptools, spatstat, spNetwork, classInt, viridis, arrow,dplyr,lubridate,sparr,raster,stpp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -573,8 +580,8 @@ Window area = 1.64803e+12 square units</code></pre>
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>acledMy_ppp <span class="ot">=</span> acled_quarter_ppp_jit[boundry_owin]</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(acledMy_ppp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Marked planar point pattern:  51454 points
-Average intensity 7.682987e-08 points per square unit
+<pre><code>Marked planar point pattern:  51461 points
+Average intensity 7.684032e-08 points per square unit
 
 Coordinates are given to 16 decimal places
 
@@ -4195,10 +4202,10 @@ Fraction of frame area: 0.343</code></pre>
 </section>
 <section id="second-order-spatial-point-patterns-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="second-order-spatial-point-patterns-analysis">7.0 Second-order Spatial Point Patterns Analysis</h2>
-<section id="analysing-spatial-point-process-using-g-function" class="level3">
-<h3 class="anchored" data-anchor-id="analysing-spatial-point-process-using-g-function">7.1 Analysing Spatial Point Process Using G-Function</h3>
+<section id="computing-g-function" class="level3">
+<h3 class="anchored" data-anchor-id="computing-g-function">7.1 Computing G-Function</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>G_1 <span class="ot">&lt;-</span> <span class="fu">Gest</span>(acled_quarter_ppp_jit,<span class="at">correction =</span> <span class="st">"border"</span>)</span>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>G_1 <span class="ot">&lt;-</span> <span class="fu">Gest</span>(acled_quarter_qqq,<span class="at">correction =</span> <span class="st">"border"</span>)</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(G_1,<span class="at">xlim=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">500</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -4212,7 +4219,7 @@ Fraction of frame area: 0.343</code></pre>
 <section id="computing-f-function-estimation" class="level3">
 <h3 class="anchored" data-anchor-id="computing-f-function-estimation">7.2 Computing F-function estimation</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>f_1 <span class="ot">&lt;-</span> <span class="fu">Fest</span>(acled_quarter_ppp_jit)</span>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>f_1 <span class="ot">&lt;-</span> <span class="fu">Fest</span>(acled_quarter_qqq)</span>
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(f_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -4268,11 +4275,11 @@ Conditioning on time...Done.</code></pre>
 <pre><code>Spatiotemporal Kernel Density Estimate
 
 Bandwidths
-  h = 43035.35 (spatial)
+  h = 43039.91 (spatial)
   lambda = 6e-04 (temporal)
 
 No. of observations
-  51454 
+  51461 
 
 Spatial bound
   Type: polygonal
@@ -4283,7 +4290,7 @@ Temporal bound
 
 Evaluation
   128 x 128 x 4 trivariate lattice
-  Density range: [1.456464e-14, 4.252875e-09]</code></pre>
+  Density range: [1.469605e-14, 4.2518e-09]</code></pre>
 </div>
 </div>
 </section>
@@ -4303,6 +4310,225 @@ Evaluation
 <div>
 <figure class="figure">
 <p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="perform-2nd-order-spatio-temporal-point-patterns-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="perform-2nd-order-spatio-temporal-point-patterns-analysis">9.0 perform 2nd-Order Spatio-temporal Point Patterns Analysis</h2>
+<section id="using-g-function" class="level3">
+<h3 class="anchored" data-anchor-id="using-g-function">9.1 Using G-Function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>G_function_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(acled_sf<span class="sc">$</span>quarter)) {</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  acled_quarter <span class="ot">&lt;-</span> <span class="fu">subset</span>(acled_sf, quarter <span class="sc">==</span> i)</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  acled_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_quarter)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  G_function_results[[i]] <span class="ot">&lt;-</span> <span class="fu">Gest</span>(acled_ppp, <span class="at">correction =</span> <span class="st">"border"</span>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(G_function_results[[i]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"G-function for Quarter"</span>, i))</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks
+Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-25-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-25-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-25-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-k-function" class="level3">
+<h3 class="anchored" data-anchor-id="using-k-function">9.2 Using K-function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>K_function_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(acled_sf<span class="sc">$</span>quarter)) {</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  acled_quarter <span class="ot">&lt;-</span> <span class="fu">subset</span>(acled_sf, quarter <span class="sc">==</span> i)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  acled_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_quarter)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  K_function_results[[i]] <span class="ot">&lt;-</span> <span class="fu">Kest</span>(acled_ppp, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(K_function_results[[i]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"K-function for Quarter"</span>, i))</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks
+Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-26-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-26-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-l-function" class="level3">
+<h3 class="anchored" data-anchor-id="using-l-function">9.3 Using L-function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>L_function_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(acled_sf<span class="sc">$</span>quarter)) {</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  acled_quarter <span class="ot">&lt;-</span> <span class="fu">subset</span>(acled_sf, quarter <span class="sc">==</span> i)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  acled_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_quarter)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  L_function_results[[i]] <span class="ot">&lt;-</span> <span class="fu">Lest</span>(acled_ppp, <span class="at">correction =</span> <span class="st">"Ripley"</span>)</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(L_function_results[[i]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"L-function for Quarter"</span>, i))</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks
+Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-27-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-27-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="using-f-function" class="level3">
+<h3 class="anchored" data-anchor-id="using-f-function">9.4 Using F-function</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>F_function_results <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">unique</span>(acled_sf<span class="sc">$</span>quarter)) {</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  acled_quarter <span class="ot">&lt;-</span> <span class="fu">subset</span>(acled_sf, quarter <span class="sc">==</span> i)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  acled_ppp <span class="ot">&lt;-</span> <span class="fu">as.ppp</span>(acled_quarter)</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  F_function_results[[i]] <span class="ot">&lt;-</span> <span class="fu">Fest</span>(acled_ppp, <span class="at">correction =</span> <span class="st">"border"</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(F_function_results[[i]], <span class="at">main =</span> <span class="fu">paste</span>(<span class="st">"F-function for Quarter"</span>, i))</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks
+Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-28-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in as.ppp.sf(acled_quarter): only first attribute column is used for
+marks</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-28-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex01_files/figure-html/unnamed-chunk-28-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
