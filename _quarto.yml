@@ -39,7 +39,7 @@ website:
 
 format:
   html:
-    theme: Material design
+    theme: hugo-paper
     css: bootstrap
     toc: true
 
